@@ -63,7 +63,20 @@ class Game(object):
         self.killed = 0
         self.wave_text = text_surface("Wave: 1", font_size=24)
         self.money_text = text_surface("Danish Dollars: 500", font_size=24)
+        self.health_index = 5
+        self.health_text = text_surface("Health: 5", font_size=24)
         self.post_init()
+        self.lost = text_surface("YOU LOST!", font_size=50)
+
+
+    def update_health_text(self):
+        self.health_text = text_surface("Health: " + str(self.health_index), font_size=24)
+
+
+    def game_over(self):
+        self.surface.fill(0,0,0)
+        self.surface.blit(self.lost,(640,360))
+
 
     def spawn_enemy(self):
         enemy = Enemy(self, self.waypoint_list[0])
@@ -103,6 +116,12 @@ class Game(object):
             e.draw(canvas)
         canvas.blit(self.wave_text, (0, 0))
         canvas.blit(self.money_text, (0,40))
+        canvas.blit(self.health_text, (0, 20))
+        if self.health_index <= 0:
+            canvas.fill(0)
+            canvas.blit(self.lost, (640, 360))
+            #canvas.blit(self.lost, (500,500))
+
     def enemy_has_been_killed(self):
         self.killed += 1
         self.money += 50
@@ -123,6 +142,9 @@ class Game(object):
             e.update(dt)
             if not e.active:
                 print("Adding enemy to delete list")
+                self.health_index = self.health_index - 1
+                self.update_health_text()
+                print("Health minus 1")
                 delete_list.append(i)
         if delete_list:
             for d in reversed(delete_list):
@@ -166,7 +188,7 @@ class Game(object):
                         # print("Spawned != Killed: {} {}".format(self.spawned, self.killed))
 
     def can_buy_tower(self):
-        if self.money_index > 0
+        if self.money_index > 0:
             return True
 
     def create_tower(self, base_pos, base):
@@ -200,6 +222,7 @@ class Game(object):
                         self.irand = randint(0, 10)
                         self.money_index= self.money_index - 100
                         self.update_money_label()
+
 
 
 if __name__ == '__main__':

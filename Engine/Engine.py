@@ -13,6 +13,7 @@ class Engine():
         """
         pygame.init()
 
+
         #setting up objects to handle the display and input events
         self.display = Display(self)
         self.input = Input(self)

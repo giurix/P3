@@ -58,7 +58,20 @@ class Game(object):
         self.spawned = 0
         self.killed = 0
         self.wave_text = text_surface("Wave: 1", font_size=24)
+        self.health_index = 5
+        self.health_text = text_surface("Health: 5", font_size=24)
         self.post_init()
+        self.lost = text_surface("YOU LOST!", font_size=50)
+
+
+    def update_health_text(self):
+        self.health_text = text_surface("Health: " + str(self.health_index), font_size=24)
+
+
+    def game_over(self):
+        self.surface.fill(0,0,0)
+        self.surface.blit(self.lost,(640,360))
+
 
     def spawn_enemy(self):
         enemy = Enemy(self, self.waypoint_list[0])
@@ -97,6 +110,11 @@ class Game(object):
         for e in self.enemies:
             e.draw(canvas)
         canvas.blit(self.wave_text, (0, 0))
+        canvas.blit(self.health_text, (0, 20))
+        if self.health_index <= 0:
+            canvas.fill(0)
+            canvas.blit(self.lost, (640, 360))
+            #canvas.blit(self.lost, (500,500))
 
     def enemy_has_been_killed(self):
         self.killed += 1
@@ -116,6 +134,9 @@ class Game(object):
             e.update(dt)
             if not e.active:
                 print("Adding enemy to delete list")
+                self.health_index = self.health_index - 1
+                self.update_health_text()
+                print("Health minus 1")
                 delete_list.append(i)
         if delete_list:
             for d in reversed(delete_list):
@@ -174,6 +195,7 @@ class Game(object):
             for tower_base in self.slots:
                 if tower_base.get_rect().collidepoint(event.pos):
                     self.create_tower((tower_base.x, tower_base.y), tower_base)
+
 
 if __name__ == '__main__':
     set_screensize(1280,720)

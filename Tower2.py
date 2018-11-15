@@ -8,11 +8,12 @@ def distance(obj1, obj2):
     try:
         return math.hypot(obj2[0] - obj1[0], obj2[1] - obj1[1])
     except TypeError:
-        #enemy
+        # enemy
         return math.hypot(obj2.x - obj1.x, obj2.y - obj1.y)
 
+
 class Bullet(object):
-    def __init__(self, movement, target, tower,):
+    def __init__(self, movement, target, tower):
         self.target = target
         self.tower = tower
         self.image = load_image("bullet.png")
@@ -24,13 +25,12 @@ class Bullet(object):
         self.height = self.image.get_rect().height
         self.movement = movement
 
-
     def draw(self, canvas):
         canvas.blit(self.image, (self.x, self.y))
 
     def update(self, dt):
         if self.target.get_rect().colliderect(self.get_rect()):
-            #we hit our target
+            # we hit our target
             self.target.take_damage(self.damage, self.tower)
             self.active = False
         else:
@@ -43,20 +43,21 @@ class Bullet(object):
     def get_rect(self):
         return pygame.Rect(self.x, self.y, self.width, self.height)
 
-class BasicTower(object):
+
+class BasicTower2(object):
     def __init__(self, x, y, slot, game):
-        self.price = 50
+        self.price = 100
         self.game = game
         self.default_direction = None
         self.x = x
         self.y = y
-        self.attack_range = 200
+        self.attack_range = 5000
         self.damage = 10
-        self.fire_rate = 1000
+        self.fire_rate = 500
         self.attacking = False
         self.target = None
         self.angle = 0
-        self.image = load_image("tower.png")
+        self.image = load_image("Tower2.jpg")
         self.rotated_image = self.image
         self.image_rect = self.image.get_rect()
         self.draw_range_circle = True
@@ -76,11 +77,8 @@ class BasicTower(object):
         elif slot.facing == "right":
             self.default_direction = 0
         self.angle = self.default_direction
-     #   self.update_image_rotation()
 
-
-
-
+    #   self.update_image_rotation()
 
     def fire_cannon(self):
         speed = 0.2
@@ -97,35 +95,42 @@ class BasicTower(object):
     def draw(self, canvas):
         canvas.blit(self.rotated_image, (self.x, self.y))
         if self.draw_range_circle:
-            pygame.draw.circle(canvas, (255, 255, 255), (self.x + int((self.image_rect.width / 2)), self.y + int((self.image_rect.height / 2))), self.attack_range, 1)
+            pygame.draw.circle(canvas, (255, 255, 255),
+                               (self.x + int((self.image_rect.width / 2)), self.y + int((self.image_rect.height / 2))),
+                               self.attack_range, 1)
         for b in self.bullets:
             b.draw(canvas)
+
+    def getPrice(self):
+        return self.price
+
 
     def get_rect(self):
         return pygame.Rect(self.x, self.y, self.image_rect.width, self.image_rect.height)
 
     def update(self, dt):
-        #update attack timer
+        # update attack timer
         self.attack_timer += dt
 
-        #if we don't have a target, search for one
+        # if we don't have a target, search for one
         if not self.target:
             self.set_target(self.scan_for_enemies())
-        
-        #do we have a target?
+
+        # do we have a target?
         if self.target:
-            #if so, is it in range
+            # if so, is it in range
             if not self.in_range(self.target):
                 print("Target out of range, setting to none")
                 self.target = None
-        #update bullets
+        # update bullets
         for b in self.bullets:
             b.update(dt)
 
         self.fire_cannon()
         self.clear_dead_bullets()
-     #   self.update_image(dt)
-        
+
+    #   self.update_image(dt)
+
     def clear_dead_bullets(self):
         old_bullets = []
         for i, b in enumerate(self.bullets):
@@ -149,27 +154,27 @@ class BasicTower(object):
 
         return int(degs)
 
- #   def update_image_rotation(self):
-  #      old_center = self.image.get_rect().center
-   #     rotated_image = self.rot_center(self.image, self.angle)
+    #   def update_image_rotation(self):
+    #      old_center = self.image.get_rect().center
+    #     rotated_image = self.rot_center(self.image, self.angle)
     #    self.rotated_image = rotated_image
-     #   self.rotated_image.get_rect().center = old_center
+    #   self.rotated_image.get_rect().center = old_center
 
-#    def update_image(self, dt):
- #       self.last_image_update += dt
-  #      if self.last_image_update > self.last_image_update_max:
-   #         self.last_image_update = 0
+    #    def update_image(self, dt):
+    #       self.last_image_update += dt
+    #      if self.last_image_update > self.last_image_update_max:
+    #         self.last_image_update = 0
     #        if self.target:
-     #           self.angle = self.get_angle(self, self.target)
-      #          print("Angle: {}".format(self.angle))
-       #         self.update_image_rotation()
-        #    else:
-         #       #we don't have a target, reset
-          #      if self.angle > self.default_direction:
-           #         self.angle -= 1
-            #    elif self.angle < self.default_direction:
-             #       self.angle += 1
-              #  self.update_image_rotation()
+    #           self.angle = self.get_angle(self, self.target)
+    #          print("Angle: {}".format(self.angle))
+    #         self.update_image_rotation()
+    #    else:
+    #       #we don't have a target, reset
+    #      if self.angle > self.default_direction:
+    #         self.angle -= 1
+    #    elif self.angle < self.default_direction:
+    #       self.angle += 1
+    #  self.update_image_rotation()
 
     def handle_event(self, event):
         pass
@@ -178,15 +183,15 @@ class BasicTower(object):
         print("Setting Target")
         self.target = target
 
- #  def rot_center(self, image, angle):
-  #      """rotate an image while keeping its center and size"""
-   #     print("Rotating image by angle: {}".format(angle))
+    #  def rot_center(self, image, angle):
+    #      """rotate an image while keeping its center and size"""
+    #     print("Rotating image by angle: {}".format(angle))
     #    orig_rect = image.get_rect()
-     #   rot_image = pygame.transform.rotate(image, angle)
-      #  rot_rect = orig_rect.copy()
-       # rot_rect.center = rot_image.get_rect().center
-        #rot_image = rot_image.subsurface(rot_rect).copy()
-        #return rot_image
+    #   rot_image = pygame.transform.rotate(image, angle)
+    #  rot_rect = orig_rect.copy()
+    # rot_rect.center = rot_image.get_rect().center
+    # rot_image = rot_image.subsurface(rot_rect).copy()
+    # return rot_image
 
     def scan_for_enemies(self):
         found = None
@@ -211,12 +216,11 @@ class TowerSlot(object):
         self.facing = facing
         self.surface = load_image("open_spot.png")
 
-
     def draw(self, canvas):
         r = self.surface.get_rect()
-        
+
         canvas.blit(self.surface, (self.x, self.y))
-        
+
     def get_rect(self):
         i = self.surface.get_rect()
         return pygame.Rect(self.x, self.y, i.width, i.height)

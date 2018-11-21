@@ -32,18 +32,9 @@ class Game(object):
         self.current_wave_completed = False
         self.current_wave_index = 0
         self.tower_pos = [
-            [60, 32, "down"],
-            [150, 32, "down"],
-            [240, 32, "down"],
-            [330, 32, "down"],
-            [370, 124, "up"],
-            [280, 124, "up"],
-            [190, 124, "up"],
-            [100, 124, "up"],
-            [60, 218, "up"],
-            [150, 218, "up"],
-            [240, 218, "up"],
-            [330, 218, "up"],
+            [150, 50, "down"],
+            [150, 120, "down"],
+
         ]
         self.slots = []
         self.towers = []
@@ -142,9 +133,9 @@ class Game(object):
             e.update(dt)
             if not e.active:
                 print("Adding enemy to delete list")
-                self.health_index = self.health_index - 1
-                self.update_health_text()
-                print("Health minus 1")
+             #   self.health_index = self.health_index - 1
+             #   self.update_health_text()
+             #  print("Health minus 1")
                 delete_list.append(i)
         if delete_list:
             for d in reversed(delete_list):
@@ -177,7 +168,7 @@ class Game(object):
                             self.wave_time_index += 1
                             self.current_wave = self.wave_times[self.wave_time_index]
                             self.current_wave_index = 0
-                            self.game_timer = 0
+                            self.game_timer = 10
                             self.current_wave_completed = False
                             self.update_wave_label()
                         else:
@@ -209,19 +200,20 @@ class Game(object):
 
     def handle_event(self, event):
         if event.type == pygame.MOUSEBUTTONDOWN:
-            for tower_base in self.slots:
-                if tower_base.get_rect().collidepoint(event.pos):
-                    if self.irand <= 5:
-                        self.create_tower((tower_base.x, tower_base.y), tower_base)
-                        self.irand = randint(5, 10)
-                        self.money_index= self.money_index - 50
-                        self.update_money_label()
+            if self.can_buy_tower() == True:
+                for tower_base in self.slots:
+                    if tower_base.get_rect().collidepoint(event.pos):
+                        if self.irand <= 5:
+                            self.create_tower((tower_base.x, tower_base.y), tower_base)
+                            self.irand = randint(5, 10)
+                            self.money_index= self.money_index - 50
+                            self.update_money_label()
 
-                    elif self.irand > 5:
-                        self.create_tower2((tower_base.x, tower_base.y), tower_base)
-                        self.irand = randint(0, 10)
-                        self.money_index= self.money_index - 100
-                        self.update_money_label()
+                        elif self.irand > 5:
+                            self.create_tower2((tower_base.x, tower_base.y), tower_base)
+                            self.irand = randint(0, 10)
+                            self.money_index= self.money_index - 100
+                            self.update_money_label()
 
 
 

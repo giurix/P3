@@ -5,9 +5,9 @@ from Engine.Text import text_surface
 class Enemy(object):
     def __init__(self, game, waypoint):
         self.game = game
-        self.walking_speed = 0.32
+        self.walking_speed = 0.10
         self.max_hp = 40
-        self.current_hp = 40
+        self.current_hp = 5
         self.next_waypoint = self.game.get_next_waypoint(waypoint)
         self.image = load_image("enemy.png")
         self.info_layer = pygame.Surface((self.image.get_rect().width, self.image.get_rect().height), pygame.SRCALPHA)

@@ -5,7 +5,7 @@ from Engine.Text import text_surface
 class Enemy(object):
     def __init__(self, game, waypoint):
         self.game = game
-        self.walking_speed = 0.10
+        self.walking_speed = 0.50
         self.max_hp = 40
         self.current_hp = 5
         self.next_waypoint = self.game.get_next_waypoint(waypoint)

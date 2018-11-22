@@ -54,8 +54,8 @@ class Game(object):
         self.killed = 0
         self.wave_text = text_surface("Wave: 1", font_size=24)
         self.money_text = text_surface("Danish Dollars: 500", font_size=24)
-        self.health_index = 5
-        self.health_text = text_surface("Health: 5", font_size=24)
+        self.health_index = 100
+        self.health_text = text_surface("Health: 100", font_size=24)
         self.post_init()
         self.lost = text_surface("YOU LOST!", font_size=50)
 
@@ -169,7 +169,11 @@ class Game(object):
                             self.current_wave = self.wave_times[self.wave_time_index]
                             self.current_wave_index = 0
                             self.game_timer = 10
+                            self.health_index = self.health_index - self.killed
+                            self.update_health_text()
+                            print("Health minus 1")
                             self.current_wave_completed = False
+
                             self.update_wave_label()
                         else:
                             print("You win!")
